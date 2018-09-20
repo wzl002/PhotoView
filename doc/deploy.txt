@@ -1,0 +1,10 @@
+deploy on device though WIFI:
+
+> adb tcpip 5555
+restarting in TCP mode port: 5555
+
+> adb connect ip_adress_of_device (eg: 192.168.0.100)
+connected to 192.168.0.100:5555
+
+if error shows, try 
+> adb disconnect
