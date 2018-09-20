@@ -18,7 +18,6 @@ android {
     }
 }
 
-android.enableBuildCache=false // for Error of Jenkins in ':app:mergeReleaseResources'
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
