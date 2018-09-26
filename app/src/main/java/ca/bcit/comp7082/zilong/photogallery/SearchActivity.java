@@ -9,6 +9,7 @@ import android.view.View;
 import android.widget.DatePicker;
 import android.widget.EditText;
 
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
@@ -39,7 +40,7 @@ public class SearchActivity extends AppCompatActivity {
         toDatePickerDialog = bindDatePickerDialog(this, toDate);
     }
 
-    public static DatePickerDialog bindDatePickerDialog(Context context, final EditText editText) {
+    private static DatePickerDialog bindDatePickerDialog(Context context, final EditText editText) {
 
         Calendar newCalendar = Calendar.getInstance();
 
@@ -74,11 +75,25 @@ public class SearchActivity extends AppCompatActivity {
 
     public void returnFormResult() {
         QueryPicture query = new QueryPicture();
+        SimpleDateFormat dateFormatter = new SimpleDateFormat("dd-MM-yyyy", Locale.US);
         EditText keyword = findViewById(R.id.keyword_input);
 
         query.setTitle(keyword.getText().toString());
-        query.setFromDate(getDateFromDatePicker(fromDatePickerDialog, 0));
-        query.setToDate(getDateFromDatePicker(toDatePickerDialog, 1)); // offset to 0 o'clock of next day
+        String fromText = ((EditText) findViewById(R.id.from_date_input)).getText().toString();
+        String toText = ((EditText) findViewById(R.id.to_date_input)).getText().toString();
+        try {
+            query.setFromDate(dateFormatter.parse(fromText));
+
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        try {
+            query.setToDate(dateFormatter.parse(toText));
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        // query.setFromDate(getDateFromDatePicker(fromDatePickerDialog, 0));
+        // query.setToDate(getDateFromDatePicker(toDatePickerDialog, 1)); // offset to 0 o'clock of next day
 
         Intent resultIntent = new Intent();
         resultIntent.putExtra("queryData", query);
@@ -91,7 +106,7 @@ public class SearchActivity extends AppCompatActivity {
      * @param datePicker
      * @return a java.util.Date
      */
-    public static Date getDateFromDatePicker(DatePickerDialog datePicker, int offsetDay) {
+    private static Date getDateFromDatePicker(DatePickerDialog datePicker, int offsetDay) {
         int day = datePicker.getDatePicker().getDayOfMonth();
         int month = datePicker.getDatePicker().getMonth();
         int year = datePicker.getDatePicker().getYear();

@@ -50,8 +50,6 @@ public class MainActivity extends AppCompatActivity {
 
         photoService = new PhotoService(this);
 
-        // photoService.resetDatabase(); // reset database for test.
-
         initView();
     }
 

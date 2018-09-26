@@ -109,6 +109,8 @@
                 android:id="@+id/snap_button"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginLeft="6dp"
+                android:layout_marginRight="6dp"
                 android:layout_weight="1"
                 android:background="@color/colorPrimary"
                 android:onClick="onSnapClick"
