@@ -25,6 +25,14 @@ public interface PictureDao {
     @Query("SELECT * FROM picture WHERE title LIKE :keyword and time BETWEEN :startTime AND :endTime ORDER BY uid DESC LIMIT 10")
     public List<Picture> findByNameAndTime(String keyword, long startTime, long endTime);
 
+    @Query("SELECT * FROM picture WHERE " +
+            "title LIKE :keyword " +
+            "AND time BETWEEN :startTime AND :endTime " +
+            "AND latitude BETWEEN :NELat AND :SWLat " +
+            "AND longitude BETWEEN :NELong AND :SWLong " +
+            "ORDER BY uid DESC LIMIT 10")
+    public List<Picture> findByNameAndTimeAndLocation(String keyword, long startTime, long endTime, double NELat, double SWLat, double NELong, double SWLong);
+
     @Update
     public void updatePictures(Picture... pictures);
 

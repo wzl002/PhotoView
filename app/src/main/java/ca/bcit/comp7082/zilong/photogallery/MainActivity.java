@@ -51,6 +51,7 @@ public class MainActivity extends AppCompatActivity {
         photoService = new PhotoService(this);
 
         initView();
+
     }
 
     protected void initView() {
@@ -177,7 +178,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     protected void onCameraReturn() {
-        Picture picture = photoService.savePictureToDB(mCurrentPhotoPath);
+        Picture picture = photoService.savePictureToDB(mCurrentPhotoPath, MapsActivity.getCurrentLocation(this));
         try {
             Bitmap bitmap = BitmapUtil.decodeBitmapFromURI(this, mCurrentPhotoPath);
             picture.setPictureBitmap(bitmap);

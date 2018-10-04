@@ -11,6 +11,8 @@ import android.os.Build;
 import android.os.Environment;
 import android.support.v4.content.FileProvider;
 
+import com.google.android.gms.maps.model.LatLng;
+
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -50,14 +52,21 @@ public class PhotoService {
         long fromDate = queryPicture.getFromDate() != null ? queryPicture.getFromDate().getTime() : 0; // fromDate default from 0
         long toDate = queryPicture.getFromDate() != null ? queryPicture.getToDate().getTime() : (new Date()).getTime(); // toDate default to now
 
-        if (title != null && title.trim().length() > 0) {
-            return DatabaseService.getPictureDao().findByNameAndTime("%" + title + "%", fromDate, toDate);
+        if (title == null || title.trim().length() == 0) {
+            title = "%";
+        }
+        if (queryPicture.isSearchByArea()) {
+            double NELat = queryPicture.getNortheastLat();
+            double NELong = queryPicture.getNortheastLong();
+            double SWLat = queryPicture.getSouthwestLat();
+            double SWLong = queryPicture.getSouthwestLong();
+            return DatabaseService.getPictureDao().findByNameAndTimeAndLocation("%" + title + "%", fromDate, toDate, NELat, SWLat, NELong, SWLong);
         } else {
-            return DatabaseService.getPictureDao().findByTime(fromDate, toDate);
+            return DatabaseService.getPictureDao().findByNameAndTime("%" + title + "%", fromDate, toDate);
         }
     }
 
-    public void updatePicture(Picture picture){
+    public void updatePicture(Picture picture) {
         DatabaseService.getPictureDao().updatePictures(picture);
     }
 
@@ -86,9 +95,10 @@ public class PhotoService {
      * create a new picture and insert into database
      *
      * @param fileUri
+     * @param currentLocation
      * @return
      */
-    public Picture savePictureToDB(Uri fileUri) {
+    public Picture savePictureToDB(Uri fileUri, LatLng currentLocation) {
         PictureDao dao = DatabaseService.getPictureDao();
         Picture picture = new Picture();
         picture.setTime((new Date().getTime()));
@@ -96,6 +106,11 @@ public class PhotoService {
 
         String fileName = new File(fileUri.getPath()).getName();
         picture.setUri(fileName);
+
+        if (currentLocation != null) {
+            picture.setLatitude(currentLocation.latitude);
+            picture.setLongitude(currentLocation.longitude);
+        }
 
         dao.insertAll(picture);
         return picture;
