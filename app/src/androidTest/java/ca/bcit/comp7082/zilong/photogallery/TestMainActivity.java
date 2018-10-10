@@ -6,6 +6,8 @@ import android.support.test.rule.ActivityTestRule;
 import android.support.test.runner.AndroidJUnit4;
 import android.util.Log;
 
+import com.google.android.gms.maps.model.LatLng;
+
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -36,6 +38,8 @@ public class TestMainActivity {
 
     private PhotoService photoService;
     private List<Picture> pictureList;
+
+    public static String NO_RESULT_FOUND = "No Result";
 
     @Rule
     public ActivityTestRule<MainActivity> mActivityRule =
@@ -143,6 +147,7 @@ public class TestMainActivity {
         Calendar fromCalendar = Calendar.getInstance();
         Calendar toCalendar = Calendar.getInstance();
         fromCalendar.add(Calendar.MONTH, -2);
+        toCalendar.add(Calendar.DATE, 1);
         String fromDate = dateFormatter.format(fromCalendar.getTime());
         String toDate = dateFormatter.format(toCalendar.getTime());
 
@@ -170,5 +175,69 @@ public class TestMainActivity {
         onView(withId(R.id.search_button)).perform(click());
 
         onView(withId(R.id.photo_name_text)).check(matches((isDisplayed()))).check(matches(withText(picName2)));
+    }
+
+    // Test Location Research
+    // In Espresso, it not possible to operate the google Map object like move camera. ( uiautomator can get the marker object)
+    // Instead, this test change the location data of pictures, one in search area and one out of it.
+    @Test
+    public void testSearchByLocation() {
+        SimpleDateFormat dateFormatter = new SimpleDateFormat("dd-MM-yyyy", Locale.US);
+
+        LatLng loc = MapsActivity.getCurrentLocation( InstrumentationRegistry.getTargetContext());
+
+        Picture picture1 = this.pictureList.get(0);
+        Picture picture2 = this.pictureList.get(1);
+
+        picture1.setLatitude(loc.latitude);
+        picture1.setLongitude(loc.longitude);
+        picture2.setLatitude(loc.latitude + 10);
+        picture2.setLongitude(loc.longitude + 10);
+
+        this.photoService.updatePicture(picture1);
+        this.photoService.updatePicture(picture2);
+
+        String picName1 = picture1.getTitle();
+        String picName2 = picture2.getTitle();
+
+        Calendar fromCalendar = Calendar.getInstance();
+        Calendar toCalendar = Calendar.getInstance();
+        fromCalendar.add(Calendar.MONTH, -2);
+        toCalendar.add(Calendar.DATE, 1);
+        String fromDate = dateFormatter.format(fromCalendar.getTime());
+        String toDate = dateFormatter.format(toCalendar.getTime());
+
+        onView(withId(R.id.menu_search)).perform(click());
+        onView(withId(R.id.keyword_input)).check(matches((isDisplayed())));
+        onView(withId(R.id.from_date_input)).check(matches((isDisplayed())));
+        onView(withId(R.id.to_date_input)).check(matches((isDisplayed())));
+
+        // search name 1
+        onView(withId(R.id.keyword_input)).perform(replaceText(picName1), closeSoftKeyboard());
+        onView(withId(R.id.from_date_input)).perform(replaceText(fromDate));
+        onView(withId(R.id.to_date_input)).perform(replaceText(toDate));
+
+        // checkbox: search by area
+        onView(withId(R.id.search_by_area_checkbox)).perform(click());
+
+        // click search and return
+        onView(withId(R.id.search_button)).perform(click());
+
+        onView(withId(R.id.photo_name_text)).check(matches((isDisplayed()))).check(matches(withText(picName1)));
+
+        // search picture 2
+        onView(withId(R.id.menu_search)).perform(click());
+        onView(withId(R.id.keyword_input)).check(matches((isDisplayed()))).perform(replaceText(picName2), closeSoftKeyboard());
+        onView(withId(R.id.from_date_input)).perform(replaceText(fromDate));
+        onView(withId(R.id.to_date_input)).perform(replaceText(toDate));
+
+        // checkbox: search by area
+        onView(withId(R.id.search_by_area_checkbox)).perform(click());
+
+        // click search and return
+        onView(withId(R.id.search_button)).perform(click());
+
+        // No result should be found
+        onView(withId(R.id.photo_name_text)).check(matches((isDisplayed()))).check(matches(withText(NO_RESULT_FOUND)));
     }
 }

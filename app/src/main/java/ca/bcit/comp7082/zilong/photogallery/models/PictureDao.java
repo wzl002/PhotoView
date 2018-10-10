@@ -28,8 +28,8 @@ public interface PictureDao {
     @Query("SELECT * FROM picture WHERE " +
             "title LIKE :keyword " +
             "AND time BETWEEN :startTime AND :endTime " +
-            "AND latitude BETWEEN :NELat AND :SWLat " +
-            "AND longitude BETWEEN :NELong AND :SWLong " +
+            "AND latitude BETWEEN :SWLat AND :NELat " +
+            "AND longitude BETWEEN :SWLong AND :NELong " +
             "ORDER BY uid DESC LIMIT 10")
     public List<Picture> findByNameAndTimeAndLocation(String keyword, long startTime, long endTime, double NELat, double SWLat, double NELong, double SWLong);
 
