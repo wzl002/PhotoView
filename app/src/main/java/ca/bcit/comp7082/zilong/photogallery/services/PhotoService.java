@@ -1,4 +1,4 @@
-package ca.bcit.comp7082.zilong.photogallery;
+package ca.bcit.comp7082.zilong.photogallery.services;
 
 import android.content.ClipData;
 import android.content.Context;
@@ -70,7 +70,7 @@ public class PhotoService {
         DatabaseService.getPictureDao().updatePictures(picture);
     }
 
-    protected Bitmap getBitmap(Picture picture) {
+    public Bitmap getBitmap(Picture picture) {
         File storageDir = context.getExternalFilesDir(Environment.DIRECTORY_PICTURES);
         String fileName = picture.getUri();
         File pictureFile = new File(storageDir, fileName);

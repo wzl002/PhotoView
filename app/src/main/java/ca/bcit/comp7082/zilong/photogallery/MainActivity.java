@@ -21,6 +21,8 @@ import java.util.List;
 
 import ca.bcit.comp7082.zilong.photogallery.models.Picture;
 import ca.bcit.comp7082.zilong.photogallery.models.QueryPicture;
+import ca.bcit.comp7082.zilong.photogallery.services.DatabaseService;
+import ca.bcit.comp7082.zilong.photogallery.services.PhotoService;
 import ca.bcit.comp7082.zilong.photogallery.utils.BitmapUtil;
 
 public class MainActivity extends AppCompatActivity {

@@ -1,4 +1,4 @@
-package ca.bcit.comp7082.zilong.photogallery;
+package ca.bcit.comp7082.zilong.photogallery.services;
 
 import android.arch.persistence.room.Room;
 import android.content.Context;
@@ -8,8 +8,6 @@ import ca.bcit.comp7082.zilong.photogallery.models.PictureDao;
 
 public class DatabaseService {
 
-    //It should follow the singleton design pattern when instantiating an AppDatabase object,
-    // as each RoomDatabase instance is fairly expensive, and you rarely need access to multiple instances.
     private static AppDatabase db = null;
 
     public static void initDatabaseService(Context context) {

@@ -19,6 +19,8 @@ import java.util.List;
 import java.util.Locale;
 
 import ca.bcit.comp7082.zilong.photogallery.models.Picture;
+import ca.bcit.comp7082.zilong.photogallery.services.DatabaseService;
+import ca.bcit.comp7082.zilong.photogallery.services.PhotoService;
 
 import static android.support.test.espresso.Espresso.onView;
 import static android.support.test.espresso.action.ViewActions.click;
