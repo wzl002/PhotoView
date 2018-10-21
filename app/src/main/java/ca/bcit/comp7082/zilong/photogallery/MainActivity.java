@@ -30,8 +30,8 @@ public class MainActivity extends AppCompatActivity {
     /**
      * take photo
      */
-    static final int REQUEST_TAKE_PHOTO = 1;
-    static final int REQUEST_SEARCH_ACTIVITY = 2;
+    private static final int REQUEST_TAKE_PHOTO = 1;
+    private static final int REQUEST_SEARCH_ACTIVITY = 2;
 
     private PhotoService photoService;
 
@@ -171,11 +171,15 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (resultCode == RESULT_OK) {
-            if (requestCode == REQUEST_TAKE_PHOTO) {
-                onCameraReturn();
-            } else if (requestCode == REQUEST_SEARCH_ACTIVITY) {
-                onSearchActivityReturn(data);
-            }
+            onActivityReturnOK(requestCode, data);
+        }
+    }
+
+    protected void onActivityReturnOK(int requestCode, Intent data) {
+        if (requestCode == REQUEST_TAKE_PHOTO) {
+            onCameraReturn(); // get image result from camera activity
+        } else if (requestCode == REQUEST_SEARCH_ACTIVITY) {
+            onSearchActivityReturn(data); // do search with parameters from search activity
         }
     }
 

@@ -11,6 +11,7 @@ import android.os.Build;
 import android.os.Environment;
 import android.support.v4.content.FileProvider;
 
+import com.google.android.gms.common.util.Strings;
 import com.google.android.gms.maps.model.LatLng;
 
 import java.io.File;
@@ -49,10 +50,10 @@ public class PhotoService {
 
     public List<Picture> queryPictures(int start, QueryPicture queryPicture) {
         String title = queryPicture.getTitle();
-        long fromDate = queryPicture.getFromDate() != null ? queryPicture.getFromDate().getTime() : 0; // fromDate default from 0
-        long toDate = queryPicture.getFromDate() != null ? queryPicture.getToDate().getTime() : (new Date()).getTime(); // toDate default to now
+        long fromDate = getFromTime(queryPicture);  // fromDate default from 0
+        long toDate = getToTime(queryPicture); // toDate default to now
 
-        if (title == null || title.trim().length() == 0) {
+        if (Strings.isEmptyOrWhitespace(title)) {
             title = "%";
         }
         if (queryPicture.isSearchByArea()) {
@@ -64,6 +65,14 @@ public class PhotoService {
         } else {
             return DatabaseService.getPictureDao().findByNameAndTime("%" + title + "%", fromDate, toDate);
         }
+    }
+
+    protected long getFromTime(QueryPicture queryPicture){
+        return queryPicture.getFromDate() != null ? queryPicture.getFromDate().getTime() : 0;
+    }
+
+    protected long getToTime(QueryPicture queryPicture){
+        return queryPicture.getToDate() != null ? queryPicture.getToDate().getTime() : (new Date()).getTime();
     }
 
     public void updatePicture(Picture picture) {
